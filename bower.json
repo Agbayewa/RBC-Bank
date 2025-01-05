@@ -1,28 +1,33 @@
 {
-  "name": "jquery",
-  "version": "2.1.4",
-  "main": "dist/jquery.js",
-  "license": "MIT",
-  "ignore": [
-    "**/.*",
-    "build",
-    "dist/cdn",
-    "speed",
-    "test",
-    "*.md",
-    "AUTHORS.txt",
-    "Gruntfile.js",
-    "package.json"
+  "name": "jquery.inputmask",
+  "version": "3.1.63",
+  "main": [
+    "./dist/inputmask/jquery.inputmask.js",
+    "./dist/inputmask/jquery.inputmask.extensions.js",
+	"./dist/inputmask/jquery.inputmask.date.extensions.js",
+	"./dist/inputmask/jquery.inputmask.numeric.extensions.js",
+	"./dist/inputmask/jquery.inputmask.phone.extensions.js",
+	"./dist/inputmask/jquery.inputmask.regex.extensions.js"
   ],
-  "devDependencies": {
-    "sizzle": "2.1.1-jquery.2.1.2",
-    "requirejs": "2.1.10",
-    "qunit": "1.14.0",
-    "sinon": "1.8.1"
+  "keywords" : ["jquery", "plugins", "input", "form", "inputmask", "mask"],
+  "description": "jquery.inputmask is a jquery plugin which create an input mask.",
+  "license": "http://opensource.org/licenses/mit-license.php",
+  "ignore": [
+	"**/.*",
+    "qunit/",
+    "nuget/",
+    "tools/",
+    "js/",
+    "*.md",
+    "build.properties",
+    "build.xml",
+	"jquery.inputmask.jquery.json"
+  ],
+  "dependencies": {
+      "jquery": ">=1.7"
   },
-  "keywords": [
-    "jquery",
-    "javascript",
-    "library"
-  ]
+  "authors": [ 
+    { "name": "Robin Herbots" }
+  ],
+  "homepage": "http://robinherbots.github.io/jquery.inputmask"
 }

@@ -1,33 +1,21 @@
 {
-  "name": "jquery.inputmask",
-  "version": "3.1.63",
-  "main": [
-    "./dist/inputmask/jquery.inputmask.js",
-    "./dist/inputmask/jquery.inputmask.extensions.js",
-	"./dist/inputmask/jquery.inputmask.date.extensions.js",
-	"./dist/inputmask/jquery.inputmask.numeric.extensions.js",
-	"./dist/inputmask/jquery.inputmask.phone.extensions.js",
-	"./dist/inputmask/jquery.inputmask.regex.extensions.js"
+  "name": "jquery-payfield",
+  "version": "0.0.1",
+  "homepage": "https://github.com/toddlawton/jquery-payfield",
+  "authors": [
+    "Todd Lawton Beauchamp <toddbee@gmail.com>"
   ],
-  "keywords" : ["jquery", "plugins", "input", "form", "inputmask", "mask"],
-  "description": "jquery.inputmask is a jquery plugin which create an input mask.",
-  "license": "http://opensource.org/licenses/mit-license.php",
-  "ignore": [
-	"**/.*",
-    "qunit/",
-    "nuget/",
-    "tools/",
-    "js/",
-    "*.md",
-    "build.properties",
-    "build.xml",
-	"jquery.inputmask.jquery.json"
+  "description": "Simplified Credit Card Input",
+  "main": "src/jquery.payfield.js",
+  "keywords": [
+    "jquery",
+    "plugin",
+    "payment",
+    "jquery-plugin"
   ],
+  "license": "MIT",
   "dependencies": {
-      "jquery": ">=1.7"
-  },
-  "authors": [ 
-    { "name": "Robin Herbots" }
-  ],
-  "homepage": "http://robinherbots.github.io/jquery.inputmask"
+    "jquery.inputmask": "RobinHerbots/jquery.inputmask#~3.1.63",
+    "modernizr": "~2.8.3"
+  }
 }

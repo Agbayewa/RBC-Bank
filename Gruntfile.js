@@ -1,140 +1,79 @@
-module.exports = function (grunt) {
-    function createBanner(fileName) {
-        return '/*!\n' +
-            '* ' + fileName + '\n' +
-            '* http://github.com/RobinHerbots/jquery.inputmask\n' +
-            '* Copyright (c) 2010 - <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>\n' +
-            '* Licensed under the MIT license (http://www.opensource.org/licenses/mit-license.php)\n' +
-            '* Version: <%= pkg.version %>\n' +
-            '*/\n';
-    }
+module.exports = function(grunt) {
 
-    function createUglifyConfig(path) {
-        var uglifyConfig = {};
-        var srcFiles = grunt.file.expand(path + "/*.js");
-        for (var srcNdx in srcFiles) {
-            var dstFile = srcFiles[srcNdx].replace("js/", ""),
-                dstFileMin = dstFile.replace(".js", ".min.js");
-            wrapModuleLoaders(srcFiles[srcNdx], "build/" + dstFile, dstFile.indexOf("extension") == -1 ? ["jquery"] : ["jquery", "./jquery.inputmask"]);
-            uglifyConfig[dstFile] = {
-                dest: 'dist/inputmask/' + dstFile,
-                src: "build/" + dstFile,
-                options: { banner: createBanner(dstFile), beautify: true, mangle: false, preserveComments: "some", ASCIIOnly: true }
-            };
-            uglifyConfig[dstFileMin] = {
-                dest: 'dist/inputmask/' + dstFileMin,
-                src: "build/" + dstFile,
-                options: { banner: createBanner(dstFileMin), preserveComments: "some", ASCIIOnly: true }
-            };
-        }
+	grunt.initConfig({
 
-        srcFiles = grunt.file.expand(path + "/*.extensions.js");
-        srcFiles.splice(0, 0, "js/jquery.inputmask.js");
-        uglifyConfig["inputmaskbundle"] = {
-            files: {
-                'dist/<%= pkg.name %>.bundle.js': srcFiles
-            },
-            options: { banner: createBanner('<%= pkg.name %>.bundle'), beautify: true, mangle: false, preserveComments: "some", ASCIIOnly: true }
-        }
-        uglifyConfig["inputmaskbundlemin"] = {
-            files: {
-                'dist/<%= pkg.name %>.bundle.min.js': srcFiles
-            },
-            options: { banner: createBanner('<%= pkg.name %>.bundle'), preserveComments: "some", ASCIIOnly: true }
-        }
-        return uglifyConfig;
-    }
-    function wrapModuleLoaders(src, dst, dependencies) {
-        function stripClosureExecution() {
-            return srcFile.replace(new RegExp("\\(jQuery\\).*$"), "");
-        }
+		// Import package manifest
+		pkg: grunt.file.readJSON("package.json"),
 
-        function createCommonJsRequires(dependencies) {
-            var res = [];
+		// Banner definitions
+		meta: {
+			banner: "/*\n" +
+				" *  <%= pkg.title || pkg.name %> - v<%= pkg.version %>\n" +
+				" *  <%= pkg.description %>\n" +
+				" *  <%= pkg.homepage %>\n" +
+				" *\n" +
+				" *  Made by <%= pkg.author.name %>\n" +
+				" *  Under <%= pkg.license %> License\n" +
+				" */\n"
+		},
 
-            dependencies.forEach(function (dep) {
-                res.push("require('" + dep + "')");
-            });
+		// Concat definitions
+		concat: {
+			options: {
+				banner: "<%= meta.banner %>"
+			},
+			dist: {
+				src: ["src/jquery.boilerplate.js"],
+				dest: "dist/jquery.boilerplate.js"
+			}
+		},
 
-            return res.join(", ");
-        }
+		// Lint definitions
+		jshint: {
+			files: ["src/jquery.boilerplate.js"],
+			options: {
+				jshintrc: ".jshintrc"
+			}
+		},
 
-        var srcFile = grunt.file.read(src),
-            dstContent = "(function (factory) {" +
-                "if (typeof define === 'function' && define.amd) {" +
-                "define(" + JSON.stringify(dependencies) + ", factory);" +
-                "} else if (typeof exports === 'object') {" +
-                "module.exports = factory(" + createCommonJsRequires(dependencies) + ");" +
-                "} else {" +
-                "factory(jQuery);" +
-                "}}\n" + stripClosureExecution() + ");";
-        grunt.file.write(dst, dstContent);
-    }
+		// Minify definitions
+		uglify: {
+			my_target: {
+				src: ["dist/jquery.boilerplate.js"],
+				dest: "dist/jquery.boilerplate.min.js"
+			},
+			options: {
+				banner: "<%= meta.banner %>"
+			}
+		},
 
-    // Project configuration.
-    grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
-        uglify: createUglifyConfig("js"),
-        clean: ["dist"],
-        qunit: {
-            files: ['qunit/qunit.html']
-        },
-        bump: {
-            options: {
-                files: ['package.json', 'bower.json', 'composer.json', 'component.json'],
-                updateConfigs: ['pkg'],
-                commit: false,
-                createTag: false,
-                push: false
-            }
-        },
-        release: {
-            options: {
-                bump: false,
-                commitMessage: 'jquery.inputmask <%= version %>'
-            }
-        },
-        nugetpack: {
-            dist: {
-                src: function () { return process.platform === "linux" ? 'nuspecs/jquery.inputmask.linux.nuspec' : 'nuspecs/jquery.inputmask.nuspec'; }(),
-                dest: 'dist/',
-                options: {
-                    version: '<%= pkg.version %>'
-                }
-            }
-        },
-        nugetpush: {
-            dist: {
-                src: 'dist/jQuery.InputMask.<%= pkg.version %>.nupkg'
-            }
-        },
-        shell: {
-            options: {
-                stderr: false
-            },
-            gitcommitchanges: {
-                command: ['git add .',
-                    'git reset -- package.json',
-                    'git commit -m "jquery.inputmask <%= pkg.version %>"'
-                ].join('&&')
-            }
-        }
-    });
+		// CoffeeScript compilation
+		coffee: {
+			compile: {
+				files: {
+					"dist/jquery.boilerplate.js": "src/jquery.boilerplate.coffee"
+				}
+			}
+		},
 
-    // Load the plugin that provides the tasks.
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-clean');
-    grunt.loadNpmTasks('grunt-contrib-qunit');
-    grunt.loadNpmTasks('grunt-bump');
-    grunt.loadNpmTasks('grunt-release');
-    grunt.loadNpmTasks('grunt-nuget');
-    grunt.loadNpmTasks('grunt-shell');
+		// watch for changes to source
+		// Better than calling grunt a million times
+		// (call 'grunt watch')
+		watch: {
+		    files: ['src/*'],
+		    tasks: ['default']
+		}
 
-    grunt.registerTask('publish:patch', ['clean', 'bump:patch', 'uglify', 'shell:gitcommitchanges', 'release', 'nugetpack', 'nugetpush']);
-    grunt.registerTask('publish:minor', ['clean', 'bump:minor', 'uglify', 'shell:gitcommitchanges', 'release', 'nugetpack', 'nugetpush']);
-    grunt.registerTask('publish:major', ['clean', 'bump:major', 'uglify', 'shell:gitcommitchanges', 'release', 'nugetpack', 'nugetpush']);
+	});
 
-    // Default task(s).
-    grunt.registerTask('default', ['bump:prerelease','clean', 'uglify']);
+	grunt.loadNpmTasks("grunt-contrib-concat");
+	grunt.loadNpmTasks("grunt-contrib-jshint");
+	grunt.loadNpmTasks("grunt-contrib-uglify");
+	grunt.loadNpmTasks("grunt-contrib-coffee");
+	grunt.loadNpmTasks("grunt-contrib-watch");
+
+	grunt.registerTask("build", ["concat", "uglify"]);
+	grunt.registerTask("default", ["jshint", "build"]);
+	grunt.registerTask("travis", ["default"]);
 
 };
